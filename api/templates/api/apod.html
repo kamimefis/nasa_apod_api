@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NASA APOD</title>
+    {% load bootstrap5 %} 
+    {% bootstrap_css %} 
+    {% bootstrap_javascript %}
+  </head>
+  <body class="text-center bg-black text-white">
+    <div class="container py-4">
+        <h1 class="mt-2">Imagen Astronómica del día</h1>
+
+        <!-- Formulario datepicker -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+                <form method="post" class="p-3 bg-secondary rounded">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form }}
+                        {% if form.errors %}
+                            <div class="text-danger small">
+                                {{ form.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-dark w-100" type="submit">Consultar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        {% if image_data %}
+            <div class="mt-4">
+                <h2>{{ image_data.title }}</h2>
+
+                {% if image_data.media_type == "image" %}
+                    <img src="{{ image_data.url }}" 
+                         alt="{{ image_data.title }}" 
+                         class="img-fluid rounded my-3">
+                {% elif image_data.media_type == "video" %}
+                    <a href="{{ image_data.url }}" target="_blank">
+                        <img src="{{ image_data.thumbnail_url }}" 
+                             alt="Miniatura del video" 
+                             class="img-fluid rounded my-3">
+                    </a>
+                    <p>Este día corresponde a un video</p>
+                    <p><a href="{{ image_data.url }}" target="_blank" class="btn btn-outline-primary">Ver video en YouTube</a></p>
+                {% endif %}
+
+                <p class="text-justify">{{ image_data.explanation }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
